@@ -24,7 +24,7 @@ node start.js
 
 ```
 // 下载pm2
-npm install pm2
+npm install pm2 -g
 
 // pm2启动
 pm2 start start.js
