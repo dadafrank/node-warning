@@ -1,15 +1,16 @@
 const notifier = require('node-notifier');
 const shell = require('shelljs');
 
-const wainingWord = [
+const warningWord = [
   '看屏幕💻太久咯，起来动动吧！',
   '工作这么久了，看看远方吧。。。🐶',
   '生活不是只有屏幕，还有美好的世界，不看看吗🧐',
-  '好累啊🥱',
+  '好累啊🥱，要不休息一会？',
   '喝水喝水喝水！！！🌊',
 ]
 const resetTime = 180000; // 休息时间
 let wainingTime = null; // 主循环变量
+let waitLockTime = null; // 等待锁屏时间变量
 let lastLockTime = null; // 上次锁屏时间
 
 // 执行主函数
@@ -18,7 +19,7 @@ main();
 // 入口函数
 function main() {
   notifier.notify('😊来吧，开始努力工作吧！XD');
-  wainingMethod(); // 开始执行主循环函数
+  warningMethod(); // 开始执行主循环函数
   sysLockMethod(); // 开始执行监听函数
 }
 
@@ -43,42 +44,37 @@ function sysLockMethod() {
           notifier.notify('休息好了就开始好好工作吧😊');
         }
         lastLockTime = null;
-        wainingMethod(); // 启动啊！！！
+        warningMethod(); // 启动啊！！！
       }
       if (isLocked && !lastLockTime) {
         lastLockTime = new Date().getTime(); // 记录时间
         clearInterval(wainingTime) // 清空定时
+        clearTimeout(waitLockTime) // 清空定时
       }
     })
   }, 1000);
 }
 
 // 主循环函数
-function wainingMethod() {
+function warningMethod() {
   // 每半小时提醒叮屏幕太久了
   wainingTime = setInterval(() => {
-    const randomNum = Math.round(Math.random() * (wainingWord.length - 1))
-    notifier.notify(wainingWord[randomNum]);
+    const randomNum = Math.round(Math.random() * (warningWord.length - 1))
+    notifier.notify(warningWord[randomNum]);
+    // 1分钟还不关屏幕开启循环模式
+    waitLockTime = setTimeout(() => {
+      secondWarningMethod()
+    }, 60000);
   }, 1800000);
 }
 
 // 次循环函数
 function secondWarningMethod() {
-  // 每一分钟提醒叮屏幕太久了
+  clearInterval(wainingTime)
+  notifier.notify('再不锁屏就要进入无限提示模式了！😠');
+  // 每10秒提醒叮屏幕太久了
   wainingTime = setInterval(() => {
-    const randomNum = Math.round(Math.random() * (wainingWord.length - 1))
-    notifier.notify(wainingWord[randomNum]);
-  }, 60000);
+    const randomNum = Math.round(Math.random() * (warningWord.length - 1))
+    notifier.notify(warningWord[randomNum]);
+  }, 10000);
 }
-
-// 如果是工作日，判断是白天还是晚上
-// 白天的话就启动好好工作的提示
-// 然后进入循环的提示
-// 晚上的话启动工作辛苦了，晚上回来还要继续学习
-// 然后进入循环的提示
-
-// 放假的话
-// 最好判断下今天是否已经学习了，如果晚上才的话就提示白天为什么没有工作，晚上要加倍了，否则就说辛苦了，晚上还这么努力
-// 如果是中午就进入学习，就提示周末也要好好加油啊
-
-// 最好记录一下上次学习的时间*****
