@@ -1,5 +1,6 @@
 const notifier = require('node-notifier');
 const shell = require('shelljs');
+const lockSystem = require('lock-system');
 
 const warningWord = [
   '看屏幕💻太久咯，起来动动吧！',
@@ -18,7 +19,10 @@ main();
 
 // 入口函数
 function main() {
-  notifier.notify('😊来吧，开始努力工作吧！XD');
+  notifier.notify({
+    title: 'Frank的提示',
+    message: '😊来吧，开始努力工作吧！XD'
+  });
   warningMethod(); // 开始执行主循环函数
   sysLockMethod(); // 开始执行监听函数
 }
@@ -39,9 +43,15 @@ function sysLockMethod() {
       if (!isLocked && lastLockTime) {
         const time = new Date().getTime();
         if ((time - lastLockTime) < resetTime) {
-          notifier.notify('休息3分钟都不到。你自己看是身体重要还是工作重要吧😠');
+          notifier.notify({
+            title: 'Frank的提示',
+            message: '休息3分钟都不到。你自己看是身体重要还是工作重要吧😠'
+          });
         } else {
-          notifier.notify('休息好了就开始好好工作吧😊');
+          notifier.notify({
+            title: 'Frank的提示',
+            message: '休息好了就开始好好工作吧😊'
+          });
         }
         lastLockTime = null;
         warningMethod(); // 启动啊！！！
@@ -60,7 +70,16 @@ function warningMethod() {
   // 每半小时提醒叮屏幕太久了
   wainingTime = setInterval(() => {
     const randomNum = Math.round(Math.random() * (warningWord.length - 1))
-    notifier.notify(warningWord[randomNum]);
+    notifier.notify({
+      title: 'Frank的提示',
+      message: warningWord[randomNum],
+      sound: true,
+      actions: '点击锁定屏幕'
+    }, (err, response) => {
+      if (response === 'activate') { // 用户点击，则锁定屏幕
+        lockSystem()
+      }
+    });
     // 1分钟还不关屏幕开启循环模式
     waitLockTime = setTimeout(() => {
       secondWarningMethod()
@@ -68,13 +87,31 @@ function warningMethod() {
   }, 1800000);
 }
 
-// 次循环函数
+// 无限循环函数
 function secondWarningMethod() {
   clearInterval(wainingTime)
-  notifier.notify('再不锁屏就要进入无限提示模式了！😠');
+  notifier.notify({
+    title: 'Frank的提示',
+    message: '再不锁屏就要进入无限提示模式了！😠',
+    sound: true,
+    actions: '锁定屏幕'
+  }, (err, response) => {
+    if (response === 'activate') { // 用户点击，则锁定屏幕
+      lockSystem()
+    }
+  });
   // 每10秒提醒叮屏幕太久了
   wainingTime = setInterval(() => {
     const randomNum = Math.round(Math.random() * (warningWord.length - 1))
-    notifier.notify(warningWord[randomNum]);
+    notifier.notify({
+      title: 'Frank的提示',
+      message: warningWord[randomNum],
+      sound: true,
+      actions: '锁定屏幕'
+    }, (err, response) => {
+      if (response === 'activate') { // 用户点击，则锁定屏幕
+        lockSystem()
+      }
+    });
   }, 10000);
 }
