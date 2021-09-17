@@ -37,13 +37,13 @@ function sysLockMethod() {
       // 当上次未true并且当前false并且距离上次锁定屏幕超过3分钟说明休息了，清除主函数循环
       if (!isLocked && lastLockTime) {
         const time = new Date().getTime();
-        if (time - lastLockTime < resetTime) {
+        if ((time - lastLockTime) < resetTime) {
           notifier.notify('行吧，3分钟都不到。你自己看是身体重要还是工作重要吧😠');
         }
         lastLockTime = null;
         wainingMethod(); // 启动啊！！！
       }
-      if (isLocked) {
+      if (isLocked && !lastLockTime) {
         lastLockTime = new Date().getTime(); // 记录时间
         clearInterval(wainingTime) // 清空定时
       }
