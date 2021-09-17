@@ -69,18 +69,6 @@ function secondWarningMethod() {
   }, 60000);
 }
 
-
-
-
-// function wainingMethod() {
-//   // 每半小时提醒叮屏幕太久了
-//   wainingTime = setInterval(() => {
-//     const randomNum = Math.round(Math.random() * (wainingWord.length - 1))
-//     notifier.notify(wainingWord[randomNum]);
-//   }, 2000);
-// }
-
-
 // 如果是工作日，判断是白天还是晚上
 // 白天的话就启动好好工作的提示
 // 然后进入循环的提示
