@@ -3,12 +3,12 @@ const shell = require('shelljs');
 
 const wainingWord = [
   '看屏幕💻太久咯，起来动动吧！',
-  '工作这么久了，看看远方吧。。。',
+  '工作这么久了，看看远方吧。。。🐶',
   '生活不是只有屏幕，还有美好的世界，不看看吗🧐',
   '好累啊🥱',
-  '喝水喝水喝水！！！',
+  '喝水喝水喝水！！！🌊',
 ]
-
+const resetTime = 180000; // 修复时间
 let wainingTime = null; // 主循环变量
 let lastLockTime = null; // 上次锁屏时间
 
@@ -24,7 +24,7 @@ function main() {
 
 // 监听是否锁定屏幕了
 function sysLockMethod() {
-  setInterval(() => { // 每10s监听一次
+  setInterval(() => { // 每1s监听一次
     shell.exec(`
       function screenIsLocked { [ "$(/usr/libexec/PlistBuddy -c "print :IOConsoleUsers:0:CGSSessionScreenIsLocked" /dev/stdin 2>/dev/null <<< "$(ioreg -n Root -d1 -a)")" != "true" ] && return 0 || return 1; }
       if screenIsLocked; then
@@ -32,20 +32,23 @@ function sysLockMethod() {
       else
         echo false
       fi
-    `, (code, stdout, stderr) => {
+    `, { silent: true }, (code, stdout, stderr) => {
       const isLocked = stdout.trim() === 'false'
-      if (!lastLockTime) { // 没有上次锁屏时间就不操作
-        return
-      }
       // 当上次未true并且当前false并且距离上次锁定屏幕超过3分钟说明休息了，清除主函数循环
-      if (!isLocked) {
-        console.log('没有锁屏啊')
+      if (!isLocked && lastLockTime) {
+        const time = new Date().getTime();
+        if (time - lastLockTime < resetTime) {
+          notifier.notify('行吧，3分钟都不到。你自己看是身体重要还是工作重要吧😠');
+        }
+        lastLockTime = null;
+        wainingMethod(); // 启动啊！！！
       }
       if (isLocked) {
-        console.log('锁屏了')
+        lastLockTime = new Date().getTime(); // 记录时间
+        clearInterval(wainingTime) // 清空定时
       }
     })
-  }, 10000);
+  }, 1000);
 }
 
 // 主循环函数
