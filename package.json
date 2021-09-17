@@ -1,0 +1,16 @@
+{
+  "name": "warning",
+  "version": "1.0.0",
+  "description": "",
+  "main": "start.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-notifier": "^10.0.0",
+    "shelljs": "^0.8.4"
+  }
+}
