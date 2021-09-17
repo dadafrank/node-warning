@@ -8,7 +8,7 @@ const wainingWord = [
   '好累啊🥱',
   '喝水喝水喝水！！！🌊',
 ]
-const resetTime = 180000; // 修复时间
+const resetTime = 180000; // 休息时间
 let wainingTime = null; // 主循环变量
 let lastLockTime = null; // 上次锁屏时间
 
@@ -38,7 +38,9 @@ function sysLockMethod() {
       if (!isLocked && lastLockTime) {
         const time = new Date().getTime();
         if ((time - lastLockTime) < resetTime) {
-          notifier.notify('行吧，3分钟都不到。你自己看是身体重要还是工作重要吧😠');
+          notifier.notify('休息3分钟都不到。你自己看是身体重要还是工作重要吧😠');
+        } else {
+          notifier.notify('休息好了就开始好好工作吧😊');
         }
         lastLockTime = null;
         wainingMethod(); // 启动啊！！！
